@@ -10,52 +10,36 @@ public class ObjectSponer : MonoBehaviour
     float setRange = 3.5f;
     [SerializeField] GameObject[] blockObject;
     [SerializeField] Text restext;
-    //void Update()
-    //{
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        int rnd = Random.Range(1, 4);
-    //        for (int i = 0; i < rnd; i++)
-    //        {
-    //            float rndX = Random.Range(-setRange, setRange);
-    //            float rndZ = Random.Range(-setRange, setRange);
-    //            int rndObject = Random.Range(0, 2);
-    //            Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
-    //        }
-    //    }
-    //}
+    int rnd = 0;
+    bool isRoll = false;
     private void Start()
     {
-        restext.text = " ";
+        restext.text = "";
     }
     public void DiceRoll()
     {
+        if (!isRoll)
         {
-            int rnd = Random.Range(1, 4);
+            rnd = Random.Range(1, 4);
+            restext.text = rnd.ToString();
+            isRoll = true;
+        }
+    }
+    public void DropObject()
+    {
+        if (isRoll)
+        {
             for (int i = 0; i < rnd; i++)
             {
                 float rndX = Random.Range(-setRange, setRange);
                 float rndZ = Random.Range(-setRange, setRange);
                 int rndObject = Random.Range(0, 2);
-                Result(rnd);
-                
+
                 Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
             }
+            rnd = 0;
+            restext.text = "";
+            isRoll = false;
         }
-    }
-    private void Result(int rnd)
-    {
-        restext.text = rnd.ToString();
-        StartCoroutine(DelayCoroutine(1.25f, () => { TextErease(); }));
-        
-    }
-    private void TextErease()
-    {
-        restext.text = " ";
-    }
-    private IEnumerator DelayCoroutine(float seconds, UnityAction action)
-    {
-        yield return new WaitForSeconds(seconds);
-        action?.Invoke();
-    }
+    }      
 }
