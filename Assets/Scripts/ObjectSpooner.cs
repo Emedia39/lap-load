@@ -10,7 +10,8 @@ public class ObjectSponer : MonoBehaviour
     float setRange = 3.5f;
     [SerializeField] GameObject[] blockObject;
     [SerializeField] Text restext;
-    int rnd = 0;
+    [SerializeField] CardMane cardMane;
+    public int rnd = 0;
     bool isRoll = false;
     private void Start()
     {
@@ -22,6 +23,7 @@ public class ObjectSponer : MonoBehaviour
         {
             rnd = Random.Range(1, 4);
             restext.text = rnd.ToString();
+            cardMane.DrawCard(rnd);
             isRoll = true;
         }
     }
@@ -41,5 +43,13 @@ public class ObjectSponer : MonoBehaviour
             restext.text = "";
             isRoll = false;
         }
-    }      
+    }
+    public void DecreaseObject(int count)
+    {
+        if (rnd > 0)
+        {
+            rnd -= count;
+            restext.text = rnd.ToString();
+        }
+    }
 }
