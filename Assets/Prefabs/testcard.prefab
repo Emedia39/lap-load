@@ -119,9 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371e3ac13c2c4f7418518615eb838c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectLists: {fileID: 0}
   ID: 0
-  materials: []
+  materials:
+  - {fileID: 0}
 --- !u!1 &6634089341224583559
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,7 +242,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371e3ac13c2c4f7418518615eb838c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectLists: {fileID: 0}
   ID: 0
   materials:
   - {fileID: 2100000, guid: ee869c387b45ecd4faaefab03e7a485f, type: 2}
+  - {fileID: 2100000, guid: 2e54fa9573bc96045a652acba53af5eb, type: 2}
+  - {fileID: 2100000, guid: e856d2fbcd7237b4c8a7ccced723ec95, type: 2}
+  - {fileID: 2100000, guid: b596f17e1f03b8d4b9e0cc2f6544848e, type: 2}

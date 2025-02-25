@@ -11,7 +11,16 @@ public class CardEffectLists : MonoBehaviour
         {
             case 0:
                 sponer.DecreaseObject(1);
-            break;
+                break;
+            case 1:
+                sponer.DecreaseObject(1);
+                break;
+            case 2:
+                sponer.DecreaseObject(1);
+                break;
+            case 3:
+                sponer.DecreaseObject(1);
+                break;
         }
     }
 }
