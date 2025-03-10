@@ -6,6 +6,7 @@ public class Cardtouch : MonoBehaviour
 {
     CardEffectLists effectLists;
     CardMane cardTouch;
+    GameMane gameMane;
     public int ID = 0;
     [SerializeField] Material[] materials; // 複数のマテリアルを設定できるようにする
 
@@ -13,8 +14,9 @@ public class Cardtouch : MonoBehaviour
     {
         effectLists = GameObject.Find("CardEffectList").GetComponent<CardEffectLists>();
         cardTouch = GameObject.Find("Hand").GetComponent<CardMane>();
+        gameMane = GameObject.Find("GameMane").GetComponent<GameMane>();
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        ID = Random.Range(0, 4);
+        ID = Random.Range(0, 13);
         if (meshRenderer != null)
         {
             Material[] mats = meshRenderer.materials;
@@ -25,7 +27,7 @@ public class Cardtouch : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && gameMane.cardCost > 0)
         {
             effectLists.CardEffects(ID);
             Debug.Log("クリックした");

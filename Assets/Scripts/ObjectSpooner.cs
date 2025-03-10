@@ -11,7 +11,8 @@ public class ObjectSponer : MonoBehaviour
     [SerializeField] GameObject[] blockObject;
     [SerializeField] Text restext;
     [SerializeField] CardMane cardMane;
-    public int rnd = 0;
+    int rnd = 0;
+    public int dropCount = 0;
     bool isRoll = false;
     private void Start()
     {
@@ -22,6 +23,7 @@ public class ObjectSponer : MonoBehaviour
         if (!isRoll)
         {
             rnd = Random.Range(1, 4);
+            dropCount = rnd;
             restext.text = rnd.ToString();
             cardMane.DrawCard(rnd);
             isRoll = true;
@@ -31,7 +33,7 @@ public class ObjectSponer : MonoBehaviour
     {
         if (isRoll)
         {
-            for (int i = 0; i < rnd; i++)
+            for (int i = 0; i < dropCount; i++)
             {
                 float rndX = Random.Range(-setRange, setRange);
                 float rndZ = Random.Range(-setRange, setRange);
@@ -39,17 +41,17 @@ public class ObjectSponer : MonoBehaviour
 
                 Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
             }
-            rnd = 0;
+            dropCount = 0;
             restext.text = "";
             isRoll = false;
         }
     }
     public void DecreaseObject(int count)
     {
-        if (rnd > 0)
+        if (dropCount > 0)
         {
-            rnd -= count;
-            restext.text = rnd.ToString();
+            dropCount -= count;
+            restext.text = dropCount.ToString();
         }
     }
 }
