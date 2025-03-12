@@ -7,6 +7,11 @@ public class CardEffectLists : MonoBehaviour
     [SerializeField] ObjectSponer sponer;
     [SerializeField] CardMane Cardmane;
     [SerializeField] GameMane Ganemane;
+    public bool isUse = false;
+    public bool CheckUse()
+    {
+        return isUse;
+    }
     public void CardEffects(int ID)
     {
         switch (ID)
@@ -15,6 +20,7 @@ public class CardEffectLists : MonoBehaviour
                 //•Ïg
                 if (Ganemane.cardCost >= 1)
                 {
+                    isUse = true;
                     sponer.DecreaseObject(1);
                     Ganemane.SubCost(1);
                 }
@@ -23,6 +29,7 @@ public class CardEffectLists : MonoBehaviour
                 //‚¨‚¹‚Á‚©‚¢
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -30,6 +37,7 @@ public class CardEffectLists : MonoBehaviour
                 //Ó”C“]‰Å
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -37,6 +45,7 @@ public class CardEffectLists : MonoBehaviour
                 //ˆê•ž
                 if (Ganemane.cardCost >= 1)
                 {
+                    isUse = true;
                     Cardmane.DrawCard(2);
                     Ganemane.SubCost(1);
                 }
@@ -45,6 +54,7 @@ public class CardEffectLists : MonoBehaviour
                 //[‚¢ãJ
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -52,6 +62,7 @@ public class CardEffectLists : MonoBehaviour
                 //‚·‚è‚Ì‹Zp
                 if (Ganemane.cardCost >= 2)
                 {
+                    isUse = true;
                     Ganemane.SubCost(2);
                 }
                 break;
@@ -59,6 +70,7 @@ public class CardEffectLists : MonoBehaviour
                 //’Á’ÉÜ
                 if (Ganemane.cardCost >= 2)
                 {
+                    isUse = true;
                     Ganemane.SubCost(2);
                 }
                 break;
@@ -66,6 +78,7 @@ public class CardEffectLists : MonoBehaviour
                 //ˆ«–‚‚ÌŒ_–ñ
                 if (Ganemane.cardCost >= 5)
                 {
+                    isUse = true;
                     Ganemane.SubCost(5);
                 }
                 break;
@@ -73,6 +86,7 @@ public class CardEffectLists : MonoBehaviour
                 //’fß
                 if (Ganemane.cardCost >= 2)
                 {
+                    isUse = true;
                     Ganemane.SubCost(2);
                 }
                 break;
@@ -80,6 +94,7 @@ public class CardEffectLists : MonoBehaviour
                 //ˆá–@‚ÈŽæ‚è—§‚Ä
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -87,6 +102,7 @@ public class CardEffectLists : MonoBehaviour
                 //ˆÞk
                 if (Ganemane.cardCost >= 1)
                 {
+                    isUse = true;
                     Ganemane.SubCost(1);
                 }
                 break;
@@ -94,6 +110,7 @@ public class CardEffectLists : MonoBehaviour
                 //–•ŽE
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -101,6 +118,7 @@ public class CardEffectLists : MonoBehaviour
                 //“¦–S
                 if (Ganemane.cardCost >= 3)
                 {
+                    isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
