@@ -11,6 +11,7 @@ public class ObjectSponer : MonoBehaviour
     [SerializeField] GameObject[] blockObject;
     [SerializeField] Text restext;
     [SerializeField] CardMane cardMane;
+    [SerializeField] ServerLink serverLink;
     int rnd = 0;
     public int dropCount = 0;
     bool isRoll = false;
@@ -41,6 +42,7 @@ public class ObjectSponer : MonoBehaviour
 
                 Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
             }
+            serverLink.Transmission($"オブジェクトを{dropCount}個落とした");
             dropCount = 0;
             restext.text = "";
             isRoll = false;

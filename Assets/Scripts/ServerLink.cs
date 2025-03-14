@@ -23,10 +23,10 @@ public class ServerLink : MonoBehaviour
         Debug.Log("サーバーとの通信確立");
         try
         {
+            NetworkStream stream = tcpClient.GetStream();
             while (true)
             {
                 byte[] recvBuffer = new byte[1024];
-                NetworkStream stream = tcpClient.GetStream();
                 int length = await stream.ReadAsync(sendBuffer, 0, recvBuffer.Length);
                 string receiveString = Encoding.UTF8.GetString(recvBuffer, 0, length);
                 Debug.Log(receiveString);

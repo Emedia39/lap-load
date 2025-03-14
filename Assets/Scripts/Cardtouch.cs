@@ -34,7 +34,7 @@ public class Cardtouch : MonoBehaviour
             effectLists.CardEffects(ID);
             if (effectLists.CheckUse())
             {
-                serverLink.Transmission("クリックした");
+                serverLink.Transmission($"クリックした ID:{ID}");
                 cardTouch.UseCard(gameObject);
                 effectLists.isUse = false;
             }

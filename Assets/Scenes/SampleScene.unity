@@ -157,6 +157,7 @@ MonoBehaviour:
   - {fileID: 5758607460589981798, guid: 38718dcfaf5eaa04e84351dc21a08bdc, type: 3}
   restext: {fileID: 1314639621}
   cardMane: {fileID: 111369460}
+  serverLink: {fileID: 1450963859}
   dropCount: 0
 --- !u!4 &21842829
 Transform:
@@ -219,6 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 6634089341224583559, guid: 87fdfca20f8e9b94fba0859b87c3fe1a,
     type: 3}
+  serverLink: {fileID: 1450963859}
   maxCards: 5
   spacing: 1.5
   zOffset: 0.1

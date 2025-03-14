@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardMane : MonoBehaviour
 {
     [SerializeField] GameObject cardPrefab;
+    [SerializeField] ServerLink serverLink;
     [SerializeField] int maxCards = 5; // 最大枚数
     [SerializeField] float spacing = 1.5f; // カード間の間隔
     [SerializeField] float zOffset = 0.1f; // Z方向のずらし量（重なり）
@@ -13,6 +15,7 @@ public class CardMane : MonoBehaviour
 
     public void DrawCard(int count)
     {
+        serverLink.Transmission($"カードを{count}枚引いた");
         int emptySlots = maxCards - cardInstances.Count;
         int addCount = Mathf.Min(count, emptySlots); // 追加できる最大枚数
 
