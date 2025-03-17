@@ -34,7 +34,7 @@ public class Cardtouch : MonoBehaviour
             effectLists.CardEffects(ID);
             if (effectLists.CheckUse())
             {
-                serverLink.Transmission($"ƒNƒŠƒbƒN‚µ‚½ ID:{ID}");
+                serverLink.Transmission($"use/{serverLink.playerName}/{serverLink.playerName}/{ID}");
                 cardTouch.UseCard(gameObject);
                 effectLists.isUse = false;
             }

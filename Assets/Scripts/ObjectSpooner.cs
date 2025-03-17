@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Unity.VisualScripting;
+using System.Threading;
 
 public class ObjectSponer : MonoBehaviour
 {
@@ -23,14 +24,14 @@ public class ObjectSponer : MonoBehaviour
     {
         if (!isRoll)
         {
-            rnd = Random.Range(1, 4);
+            rnd = Random.Range(1, 3);
             dropCount = rnd;
             restext.text = rnd.ToString();
             cardMane.DrawCard(rnd);
             isRoll = true;
         }
     }
-    public void DropObject()
+    public void DropCount()
     {
         if (isRoll)
         {
@@ -39,14 +40,17 @@ public class ObjectSponer : MonoBehaviour
                 float rndX = Random.Range(-setRange, setRange);
                 float rndZ = Random.Range(-setRange, setRange);
                 int rndObject = Random.Range(0, 2);
-
-                Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
+                serverLink.Transmission($"drop/{serverLink.playerName}/{rndX}/{rndZ}/{rndObject}");
             }
-            serverLink.Transmission($"オブジェクトを{dropCount}個落とした");
+            //serverLink.Transmission($"オブジェクトを{dropCount}個落とした");
             dropCount = 0;
             restext.text = "";
             isRoll = false;
         }
+    }
+    public void DropObject(float rndX, float rndZ, int rndObject)
+    {
+        Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
     }
     public void DecreaseObject(int count)
     {

@@ -15,7 +15,7 @@ public class CardMane : MonoBehaviour
 
     public void DrawCard(int count)
     {
-        serverLink.Transmission($"カードを{count}枚引いた");
+        //serverLink.Transmission($"カードを{count}枚引いた");
         int emptySlots = maxCards - cardInstances.Count;
         int addCount = Mathf.Min(count, emptySlots); // 追加できる最大枚数
 

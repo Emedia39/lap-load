@@ -5,12 +5,18 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace lap_Load_Server
 {
     internal class Program
     {
         static int clientCount = 0;
+        static int playerTarn = 1;
+        static string[] SplitText(string input)
+        {
+            return input.Split('/');
+        }
         static async Task Main(string[] args)
         {
             List<TcpClient> tcpClientList = new List<TcpClient>();
@@ -50,7 +56,7 @@ namespace lap_Load_Server
                             TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
                             tcpClientList.Add(tcpClient);
 
-                            string sendString = "OK";
+                            string sendString = $"Player{clientCount}";
                             byte[] buffer = Encoding.UTF8.GetBytes(sendString);
                             NetworkStream stream = tcpClient.GetStream();
                             await stream.WriteAsync(buffer, 0, buffer.Length);
@@ -78,13 +84,31 @@ namespace lap_Load_Server
                                 else
                                 {
                                     string receiveString = Encoding.UTF8.GetString(buffer, 0, length);
+                                    string[] result = SplitText(receiveString);
                                     Console.WriteLine(receiveString);
+                                    Console.WriteLine(result[1]);
+                                    Console.WriteLine($"Player{playerTarn}");
+                                    if (result[0].Length > 0 && result[1] == $"Player{playerTarn}" )
+                                    {
+                                        string sendString = receiveString;
+                                        buffer = new byte[1024];
+                                        buffer = Encoding.UTF8.GetBytes(sendString);
 
-
-
-
-
-
+                                        foreach (TcpClient tcpClient in tcpClientList)
+                                        {
+                                            // 接続できているクライアントにだけ送信
+                                            if (tcpClient.Connected)
+                                            {
+                                                NetworkStream stream = tcpClient.GetStream();
+                                                await stream.WriteAsync(buffer, 0, buffer.Length);
+                                            }
+                                        }
+                                        playerTarn++;
+                                        if(playerTarn > tcpClientList.Count)
+                                        {
+                                            playerTarn = 1;
+                                        }
+                                    }
                                     if (receiveString == "__end")
                                     {
                                         // クライアントが終了要求を送信
