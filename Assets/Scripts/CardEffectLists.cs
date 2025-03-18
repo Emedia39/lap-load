@@ -7,7 +7,13 @@ public class CardEffectLists : MonoBehaviour
     [SerializeField] ObjectSponer sponer;
     [SerializeField] CardMane Cardmane;
     [SerializeField] GameMane Ganemane;
+    [SerializeField] AudioClip cardUse;
+    AudioSource audioSource;
     public bool isUse = false;
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     public bool CheckUse()
     {
         return isUse;
@@ -17,7 +23,7 @@ public class CardEffectLists : MonoBehaviour
         switch (ID)
         {
             case 0:
-                //•Ïg
+                //‚¨‚¹‚Á‚©‚¢
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
@@ -26,7 +32,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 1:
-                //‚¨‚¹‚Á‚©‚¢
+                //ˆê•ž
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
@@ -34,7 +40,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 2:
-                //Ó”C“]‰Å
+                //ƒXƒŠ‚Ì‹Zp
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
@@ -42,7 +48,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 3:
-                //ˆê•ž
+                //’Á’ÉÜ
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
@@ -51,7 +57,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 4:
-                //[‚¢ãJ
+                //’fß
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
@@ -59,7 +65,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 5:
-                //‚·‚è‚Ì‹Zp
+                //ˆÞk
                 if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
@@ -67,7 +73,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 6:
-                //’Á’ÉÜ
+                //–•ŽE
                 if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
@@ -75,7 +81,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 7:
-                //ˆ«–‚‚ÌŒ_–ñ
+                //ˆê‰ÆS’†
                 if (Ganemane.cardCost >= 5)
                 {
                     isUse = true;
@@ -83,7 +89,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 8:
-                //’fß
+                //‚¨Žè“`‚¢
                 if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
@@ -91,7 +97,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 9:
-                //ˆá–@‚ÈŽæ‚è—§‚Ä
+                //–½‚Ì‰ÁŒì
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
@@ -99,7 +105,7 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 10:
-                //ˆÞk
+                //‰ž‹}ˆ’u
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
@@ -107,21 +113,17 @@ public class CardEffectLists : MonoBehaviour
                 }
                 break;
             case 11:
-                //–•ŽE
+                //’fŒÅ‹‘”Û
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
                     Ganemane.SubCost(3);
                 }
                 break;
-            case 12:
-                //“¦–S
-                if (Ganemane.cardCost >= 3)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(3);
-                }
-                break;
+        }
+        if (isUse)
+        {
+            audioSource.PlayOneShot(cardUse);
         }
     }
 }

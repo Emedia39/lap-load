@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using Unity.VisualScripting;
-using System.Threading;
+using System.Threading.Tasks;
 
 public class ObjectSponer : MonoBehaviour
 {
@@ -16,42 +14,76 @@ public class ObjectSponer : MonoBehaviour
     int rnd = 0;
     public int dropCount = 0;
     bool isRoll = false;
+
     private void Start()
     {
         restext.text = "";
     }
+
     public void DiceRoll()
     {
         if (!isRoll)
         {
-            rnd = Random.Range(1, 3);
+            rnd = Random.Range(1, 4);
             dropCount = rnd;
             restext.text = rnd.ToString();
             cardMane.DrawCard(rnd);
             isRoll = true;
         }
     }
-    public void DropCount()
+
+    public async void DropCount()
     {
         if (isRoll)
         {
+            List<Vector3> placedPositions = new List<Vector3>();
+            List<Task> dropTasks = new List<Task>();
+            float minDistance = 3.0f; // 衝突防止のための最小距離
+
             for (int i = 0; i < dropCount; i++)
             {
-                float rndX = Random.Range(-setRange, setRange);
-                float rndZ = Random.Range(-setRange, setRange);
-                int rndObject = Random.Range(0, 2);
-                serverLink.Transmission($"drop/{serverLink.playerName}/{rndX}/{rndZ}/{rndObject}");
+                Vector3 dropPos;
+                int safetyCounter = 0;
+
+                // 他オブジェクトと被らない位置を探す
+                do
+                {
+                    float rndX = Random.Range(-setRange, setRange);
+                    float rndZ = Random.Range(-setRange, setRange);
+                    dropPos = new Vector3(rndX, 0, rndZ);
+                    safetyCounter++;
+
+                    // 無限ループ防止
+                    if (safetyCounter > 1000)
+                    {
+                        Debug.LogWarning("適切な配置位置を見つけられませんでした。");
+                        break;
+                    }
+
+                } while (placedPositions.Exists(pos => Vector3.Distance(pos, dropPos) < minDistance));
+
+                placedPositions.Add(dropPos);
+
+                int rndObject = Random.Range(0, blockObject.Length);
+                string message = $"drop/{serverLink.playerName}/{dropPos.x}/{dropPos.z}/{rndObject}";
+
+                dropTasks.Add(Task.Run(() => serverLink.Transmission(message)));
             }
-            //serverLink.Transmission($"オブジェクトを{dropCount}個落とした");
+
+            await Task.WhenAll(dropTasks);
+
             dropCount = 0;
             restext.text = "";
             isRoll = false;
         }
     }
+
+
     public void DropObject(float rndX, float rndZ, int rndObject)
     {
         Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
     }
+
     public void DecreaseObject(int count)
     {
         if (dropCount > 0)

@@ -1,150 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace lap_Load_Server
 {
     internal class Program
     {
+        static List<TcpClient> tcpClientList = new List<TcpClient>();
         static int clientCount = 0;
-        static int playerTarn = 1;
-        static string[] SplitText(string input)
-        {
-            return input.Split('/');
-        }
+
         static async Task Main(string[] args)
         {
-            List<TcpClient> tcpClientList = new List<TcpClient>();
-            await StartListener(tcpClientList);
+            await StartListener();
         }
-        static async Task StartListener(List<TcpClient> tcpClientList)
+
+        static async Task StartListener()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 20001);
-            TcpListener tcpListener = new TcpListener(localEndPoint);
-            tcpListener.Start();
-            Console.WriteLine("接続受付を開始");
+            TcpListener listener = new TcpListener(IPAddress.Any, 20001);
+            listener.Start();
+            Console.WriteLine("サーバー開始");
+
+            while (true)
+            {
+                TcpClient client = await listener.AcceptTcpClientAsync();
+                clientCount++;
+                tcpClientList.Add(client);
+
+                string playerName = $"Player{clientCount}\n";
+                byte[] playerNameBytes = Encoding.UTF8.GetBytes(playerName);
+                await client.GetStream().WriteAsync(playerNameBytes, 0, playerNameBytes.Length);
+
+                Console.WriteLine($"{playerName.Trim()} が接続しました");
+                _ = HandleClientAsync(client);
+            }
+        }
+
+        static async Task HandleClientAsync(TcpClient client)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer = new byte[1024];
+            StringBuilder sb = new StringBuilder();
+
             try
             {
-                while (true)
+                while (client.Connected)
                 {
-                    Console.WriteLine($"現在の接続数:{tcpClientList.Count}");
-                    List<Socket> socketList = new List<Socket>();
+                    int length = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (length <= 0) break;
 
-                    foreach (TcpClient tcpClient in tcpClientList)
+                    sb.Append(Encoding.UTF8.GetString(buffer, 0, length));
+
+                    string fullText = sb.ToString();
+                    int newLineIndex;
+                    while ((newLineIndex = fullText.IndexOf('\n')) >= 0)
                     {
-                        // 接続が生きているか確認
-                        if (tcpClient.Connected && !(tcpClient.Client.Poll(0, SelectMode.SelectRead) && tcpClient.Client.Available == 0))
+                        string message = fullText.Substring(0, newLineIndex).Trim();
+                        fullText = fullText.Substring(newLineIndex + 1);
+
+                        Console.WriteLine($"受信: {message}");
+                        await BroadcastMessageAsync(message);
+
+                        if (message == "__end")
                         {
-                            socketList.Add(tcpClient.Client);
-                        }
-                    }
-                    socketList.Add(tcpListener.Server);
-
-                    Socket.Select(socketList, null, null, -1);
-
-                    foreach (Socket socket in socketList)
-                    {
-                        if (socket == tcpListener.Server)
-                        {
-                            // 新しいクライアントが接続
-                            clientCount++;
-                            TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
-                            tcpClientList.Add(tcpClient);
-
-                            string sendString = $"Player{clientCount}";
-                            byte[] buffer = Encoding.UTF8.GetBytes(sendString);
-                            NetworkStream stream = tcpClient.GetStream();
-                            await stream.WriteAsync(buffer, 0, buffer.Length);
-                            Console.WriteLine($"Client{clientCount}が接続しました");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                byte[] buffer = new byte[1024];
-                                int length = socket.Receive(buffer, 1024, SocketFlags.None);
-
-                                if (length <= 0)
-                                {
-                                    // クライアントが切断された
-                                    clientCount--;
-                                    Console.WriteLine("クライアントが切断しました");
-                                    TcpClient disconnectedClient = tcpClientList.FirstOrDefault(client => client.Client == socket);
-                                    if (disconnectedClient != null)
-                                    {
-                                        tcpClientList.Remove(disconnectedClient);
-                                        disconnectedClient.Close();
-                                    }
-                                }
-                                else
-                                {
-                                    string receiveString = Encoding.UTF8.GetString(buffer, 0, length);
-                                    string[] result = SplitText(receiveString);
-                                    Console.WriteLine(receiveString);
-                                    Console.WriteLine(result[1]);
-                                    Console.WriteLine($"Player{playerTarn}");
-                                    if (result[0].Length > 0 && result[1] == $"Player{playerTarn}" )
-                                    {
-                                        string sendString = receiveString;
-                                        buffer = new byte[1024];
-                                        buffer = Encoding.UTF8.GetBytes(sendString);
-
-                                        foreach (TcpClient tcpClient in tcpClientList)
-                                        {
-                                            // 接続できているクライアントにだけ送信
-                                            if (tcpClient.Connected)
-                                            {
-                                                NetworkStream stream = tcpClient.GetStream();
-                                                await stream.WriteAsync(buffer, 0, buffer.Length);
-                                            }
-                                        }
-                                        playerTarn++;
-                                        if(playerTarn > tcpClientList.Count)
-                                        {
-                                            playerTarn = 1;
-                                        }
-                                    }
-                                    if (receiveString == "__end")
-                                    {
-                                        // クライアントが終了要求を送信
-                                        clientCount--;
-                                        Console.WriteLine("クライアントからの切断要求を受けました");
-                                        TcpClient disconnectedClient = tcpClientList.FirstOrDefault(client => client.Client == socket);
-                                        if (disconnectedClient != null)
-                                        {
-                                            tcpClientList.Remove(disconnectedClient);
-                                            disconnectedClient.Close();
-                                        }
-                                    }
-                                }
-                            }
-                            catch (SocketException ex)
-                            {
-                                // クライアントが強制切断された場合
-                                clientCount--;
-                                Console.WriteLine($"クライアントが強制的に切断されました: {ex.Message}");
-                                TcpClient disconnectedClient = tcpClientList.FirstOrDefault(client => client.Client == socket);
-                                if (disconnectedClient != null)
-                                {
-                                    tcpClientList.Remove(disconnectedClient);
-                                    disconnectedClient.Close();
-                                }
-                            }
+                            Console.WriteLine("クライアントから切断要求");
+                            break;
                         }
                     }
 
-                    // 接続が切れたクライアントをリストから削除
-                    tcpClientList.RemoveAll(tcpClient => !tcpClient.Connected);
+                    sb.Clear();
+                    sb.Append(fullText);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"エラー発生: {ex}");
+                Console.WriteLine($"エラー: {ex.Message}");
+            }
+            finally
+            {
+                tcpClientList.Remove(client);
+                client.Close();
+                clientCount--;
+                Console.WriteLine("クライアント切断");
+            }
+        }
+
+        static async Task BroadcastMessageAsync(string message)
+        {
+            byte[] sendBuffer = Encoding.UTF8.GetBytes(message + "\n");
+
+            foreach (var tcpClient in tcpClientList.ToArray())
+            {
+                if (tcpClient.Connected)
+                {
+                    try
+                    {
+                        await tcpClient.GetStream().WriteAsync(sendBuffer, 0, sendBuffer.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"送信エラー: {ex.Message}");
+                    }
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ public class Cardtouch : MonoBehaviour
     GameMane gameMane;
     ServerLink serverLink;
     public int ID = 0;
-    [SerializeField] Material[] materials; // •¡”‚Ìƒ}ƒeƒŠƒAƒ‹‚ğİ’è‚Å‚«‚é‚æ‚¤‚É‚·‚é
+    [SerializeField] Material[] materials;
 
     private void Start()
     {
@@ -18,12 +18,11 @@ public class Cardtouch : MonoBehaviour
         gameMane = GameObject.Find("GameMane").GetComponent<GameMane>();
         serverLink = GameObject.Find("ServerLink").GetComponent<ServerLink>();
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        ID = Random.Range(0, 12);
+        ID = Random.Range(0, materials.Length);
+
         if (meshRenderer != null)
         {
-            Material[] mats = meshRenderer.materials;
-
-            this.GetComponent<MeshRenderer>().material = materials[ID];
+            meshRenderer.material = materials[ID];
         }
     }
 

@@ -2,13 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class ServerLink : MonoBehaviour
 {
@@ -20,7 +18,7 @@ public class ServerLink : MonoBehaviour
 
     static string[] SplitText(string input)
     {
-        return input.Split('/');
+        return input.Trim().Split('/');
     }
 
     static float StringToFloat(string input)
@@ -45,11 +43,7 @@ public class ServerLink : MonoBehaviour
 
     private async Task StartClient(string ipaddress, int port)
     {
-        tcpClient = new TcpClient
-        {
-            SendTimeout = 500,
-            ReceiveTimeout = 500
-        };
+        tcpClient = new TcpClient();
 
         try
         {
@@ -59,31 +53,44 @@ public class ServerLink : MonoBehaviour
             NetworkStream stream = tcpClient.GetStream();
             byte[] recvBuffer = new byte[1024];
             int playerIdlength = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);
-            string playerIdString = Encoding.UTF8.GetString(recvBuffer, 0, playerIdlength);
+            string playerIdString = Encoding.UTF8.GetString(recvBuffer, 0, playerIdlength).Trim();
             playerText.text = playerIdString;
             playerName = playerIdString;
+
+            StringBuilder sb = new StringBuilder();
 
             while (tcpClient.Connected)
             {
                 int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);
                 if (length > 0)
                 {
-                    string receiveString = Encoding.UTF8.GetString(recvBuffer, 0, length);
+                    sb.Append(Encoding.UTF8.GetString(recvBuffer, 0, length));
 
-                    string[] result = SplitText(receiveString);
-                    if (result[0] == "drop")
+                    string fullText = sb.ToString();
+                    int newLineIndex;
+                    while ((newLineIndex = fullText.IndexOf('\n')) >= 0)
                     {
-                        sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]));
+                        string receiveString = fullText.Substring(0, newLineIndex).Trim();
+                        fullText = fullText.Substring(newLineIndex + 1);
+
+                        string[] result = SplitText(receiveString);
+                        if (result[0] == "drop")
+                        {
+                            sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]));
+                        }
+                        else if (result[0] == "use" && result[2] != playerName)
+                        {
+                            Debug.Log($"CardID:{result[3]}");
+                            effectLists.CardEffects(StringToInt(result[3]));
+                        }
+                        else
+                        {
+                            Debug.Log($"受信データ: {receiveString}");
+                        }
                     }
-                    if (result[0] == "use" && result[2] != playerName)
-                    {
-                        Debug.Log($"CardID:{result[3]}");
-                        effectLists.CardEffects(StringToInt(result[3]));
-                    }
-                    else
-                    {
-                        Debug.Log($"受信データ: {receiveString}");
-                    }
+
+                    sb.Clear();
+                    sb.Append(fullText);
                 }
                 else
                 {
@@ -109,9 +116,9 @@ public class ServerLink : MonoBehaviour
         try
         {
             NetworkStream stream = tcpClient.GetStream();
-            byte[] sendBuffer = Encoding.UTF8.GetBytes(text + "\n"); // 終端記号を追加
+            byte[] sendBuffer = Encoding.UTF8.GetBytes(text + "\n");
             await stream.WriteAsync(sendBuffer, 0, sendBuffer.Length);
-            await stream.FlushAsync(); // 送信バッファを即時フラッシュ
+            await stream.FlushAsync();
         }
         catch (Exception ex)
         {

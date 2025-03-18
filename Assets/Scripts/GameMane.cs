@@ -10,15 +10,19 @@ public class GameMane : MonoBehaviour
     [SerializeField] GameObject gameOverText;
     [SerializeField] Text costText;
     [SerializeField] ObjectSponer sponer;
+    [SerializeField] AudioClip diceRoll;
+    AudioSource audioSource;
     public int cardCost = 0;
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         cardCost = 5;
         costText.text = cardCost.ToString();
     }
     public void Roll()
     {
+        audioSource.PlayOneShot(diceRoll);
         cardCost = 5;
         costText.text = cardCost.ToString();
         sponer.DiceRoll();
