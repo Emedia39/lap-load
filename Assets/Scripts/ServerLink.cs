@@ -7,9 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class ServerLink : MonoBehaviour
 {
+    [SerializeField] GameObject gameOverText;
     [SerializeField] ObjectSponer sponer;
     [SerializeField] Text playerText;
     [SerializeField] Text turnText;
@@ -17,6 +19,7 @@ public class ServerLink : MonoBehaviour
     public string playerName;
     bool isGetTurn = false;
     public bool isPlay = false;
+    public int playerID;
     private static TcpClient tcpClient;
 
     static string[] SplitText(string input)
@@ -57,8 +60,9 @@ public class ServerLink : MonoBehaviour
             byte[] recvBuffer = new byte[1024];
             int playerIdlength = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);
             string playerIdString = Encoding.UTF8.GetString(recvBuffer, 0, playerIdlength).Trim();
-            playerText.text = playerIdString;
-            playerName = playerIdString;
+            playerName = $"{playerIdString}";
+            playerID = StringToInt(playerIdString);
+            playerText.text = "Player"+playerName;
             StringBuilder sb = new StringBuilder();
 
             while (tcpClient.Connected)
@@ -91,17 +95,21 @@ public class ServerLink : MonoBehaviour
                             else
                             {
                                 isPlay = false;
-                                turnText.text = $"{result[1]}‚Ì”Ô‚Å‚·";
+                                turnText.text = $"Player{result[1]}‚Ì”Ô‚Å‚·";
                             }
                         }
                         else if (result[0] == "drop")
                         {
-                            sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]));
+                            sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]),new Vector3(StringToFloat(result[5]), StringToFloat(result[5]), StringToFloat(result[5])));
                         }
-                        else if (result[0] == "use" && result[2] != playerName)
+                        else if (result[0] == "use" && result[2] == playerName && result[2] == "all")
                         {
                             Debug.Log($"CardID:{result[3]}");
                             effectLists.CardEffects(StringToInt(result[3]));
+                        }
+                        if (result[0] == "dead" && result[1] == playerName)
+                        {
+                            gameOverText.SetActive(true);
                         }
                         else
                         {

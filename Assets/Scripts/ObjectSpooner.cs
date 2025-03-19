@@ -11,6 +11,7 @@ public class ObjectSponer : MonoBehaviour
     [SerializeField] Text restext;
     [SerializeField] CardMane cardMane;
     [SerializeField] ServerLink serverLink;
+    [SerializeField] CardEffectLists effectLists;
     int rnd = 0;
     public int dropCount = 0;
     bool isRoll = false;
@@ -65,7 +66,7 @@ public class ObjectSponer : MonoBehaviour
                 placedPositions.Add(dropPos);
 
                 int rndObject = Random.Range(0, blockObject.Length);
-                string message = $"drop/{serverLink.playerName}/{dropPos.x}/{dropPos.z}/{rndObject}";
+                string message = $"drop/{serverLink.playerName}/{dropPos.x}/{dropPos.z}/{rndObject}/{effectLists.objectScale}";
 
                 dropTasks.Add(Task.Run(() => serverLink.Transmission(message)));
             }
@@ -75,14 +76,19 @@ public class ObjectSponer : MonoBehaviour
             dropCount = 0;
             restext.text = "0";
             isRoll = false;
+            effectLists.objectScale = "1.0";
             serverLink.Transmission("endturn");
         }
     }
 
 
-    public void DropObject(float rndX, float rndZ, int rndObject)
+    public void DropObject(float rndX, float rndZ, int rndObject, Vector3 scale)
     {
-        Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
+        // オブジェクトのインスタンスを生成
+        GameObject newObject = Instantiate(blockObject[rndObject], new Vector3(rndX, 10, rndZ), Quaternion.identity);
+
+        // インスタンスのスケールを設定
+        newObject.transform.localScale = scale;
     }
 
     public void DecreaseObject(int count)

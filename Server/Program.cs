@@ -10,8 +10,10 @@ namespace lap_Load_Server
     internal class Program
     {
         static List<TcpClient> tcpClientList = new List<TcpClient>();
+        static string[] deadcount = new string[4];
         static int clientCount = 0;
         static int turnCount = 1;
+        static string backmessage;
 
         static async Task Main(string[] args)
         {
@@ -30,11 +32,11 @@ namespace lap_Load_Server
                 clientCount++;
                 tcpClientList.Add(client);
 
-                string playerName = $"Player{clientCount}\n";
+                string playerName = $"{clientCount}\n";
                 byte[] playerNameBytes = Encoding.UTF8.GetBytes(playerName);
                 await client.GetStream().WriteAsync(playerNameBytes, 0, playerNameBytes.Length);
 
-                Console.WriteLine($"{playerName.Trim()} が接続しました");
+                Console.WriteLine($"Player{playerName.Trim()} が接続しました");
                 Console.WriteLine($"現在の接続数:{clientCount}");
                 _ = HandleClientAsync(client);
             }
@@ -70,18 +72,32 @@ namespace lap_Load_Server
                             {
                                 turnCount = 1;
                             }
-                            await BroadcastMessageAsync($"turn/Player{turnCount}");
+                            if (deadcount[clientCount - 1] == "dead")
+                            {
+                                turnCount++;
+                            }
+                            await BroadcastMessageAsync($"turn/{turnCount}");
+                            backmessage = $"turn/{turnCount}";
                         }
                         else if (message == "getturn")
                         {
-                            await BroadcastMessageAsync($"turn/Player{turnCount}");
+                            await BroadcastMessageAsync($"turn/{turnCount}");
+                            backmessage = $"turn/{turnCount}";
 
+                        }
+                        else if (message == "dead")
+                        {
+                            deadcount[clientCount-1] = "dead";
+                            await BroadcastMessageAsync($"dead/{turnCount}");
+                            backmessage = $"dead/{turnCount}";
                         }
                         else
                         {
                             await BroadcastMessageAsync(message);
+                            backmessage = message;
+
                         }
-                            
+                        Console.WriteLine($"送信: {backmessage}");
 
                         if (message == "__end")
                         {
@@ -90,7 +106,7 @@ namespace lap_Load_Server
                             break;
                         }
                     }
-
+                    Console.WriteLine("-------------------------------------");
                     sb.Clear();
                     sb.Append(fullText);
                 }
@@ -104,6 +120,10 @@ namespace lap_Load_Server
                 tcpClientList.Remove(client);
                 client.Close();
                 clientCount--;
+                if (clientCount == 0)
+                {
+                    turnCount = 1;
+                }
                 Console.WriteLine($"現在の接続数:{clientCount}");
                 Console.WriteLine("クライアント切断");
             }

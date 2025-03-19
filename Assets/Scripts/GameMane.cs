@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameMane : MonoBehaviour
-{
-    [SerializeField] GameObject gameOverText;
+{ 
     [SerializeField] Text costText;
     [SerializeField] ObjectSponer sponer;
     [SerializeField] AudioClip diceRoll;
@@ -33,7 +32,7 @@ public class GameMane : MonoBehaviour
     }
     public void GameOver()
     {
-        gameOverText.SetActive(true);
+        serverLink.Transmission("dead");
     }
     public void SubCost(int count)
     {

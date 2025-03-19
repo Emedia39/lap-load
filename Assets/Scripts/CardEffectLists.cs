@@ -8,8 +8,11 @@ public class CardEffectLists : MonoBehaviour
     [SerializeField] CardMane Cardmane;
     [SerializeField] GameMane Ganemane;
     [SerializeField] AudioClip cardUse;
+    [SerializeField] ServerLink serverLink;
     AudioSource audioSource;
     public bool isUse = false;
+    public string objectScale = "1.0";
+    public string subject;
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -20,6 +23,11 @@ public class CardEffectLists : MonoBehaviour
     }
     public void CardEffects(int ID)
     {
+        int nextPlayer = serverLink.playerID + 1;
+        if (nextPlayer > 4)
+        {
+            nextPlayer = 1;
+        }
         switch (ID)
         {
             case 0:
@@ -27,7 +35,9 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
-                    sponer.DecreaseObject(1);
+                    subject = $"{serverLink.playerName}";
+
+
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -36,6 +46,7 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
                     Cardmane.DrawCard(2);
                     Ganemane.SubCost(1);
                 }
@@ -45,6 +56,7 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
+                    subject = $"Player{nextPlayer}";
                     Ganemane.SubCost(2);
                 }
                 break;
@@ -53,7 +65,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 0)
                 {
                     isUse = true;
-                    
+                    subject = $"{serverLink.playerName}";
+
                     Ganemane.SubCost(0);
                 }
                 break;
@@ -62,6 +75,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
+                    subject = $"Player{nextPlayer}";
+
                     Ganemane.SubCost(2);
                 }
                 break;
@@ -70,6 +85,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
+                    objectScale = "0.5";
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -78,6 +95,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
+                    sponer.DecreaseObject(1);
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -86,6 +105,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
+                    subject = $"all";
+
                     Ganemane.SubCost(3);
                 }
                 break;
@@ -94,6 +115,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 0)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
+                    objectScale = "1.5";
                     Ganemane.SubCost(0);
                 }
                 break;
@@ -102,6 +125,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 4)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
+
                     Ganemane.SubCost(4);
                 }
                 break;
@@ -110,6 +135,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
+                    subject = $"{serverLink.playerName}";
+
                     Ganemane.SubCost(1);
                 }
                 break;
@@ -118,6 +145,8 @@ public class CardEffectLists : MonoBehaviour
                 if (Ganemane.cardCost >= 4)
                 {
                     isUse = true;
+                    subject = $"Player{nextPlayer}";
+
                     Ganemane.SubCost(4);
                 }
                 break;
