@@ -24,31 +24,15 @@ public class CardEffectLists : MonoBehaviour
         {
             case 0:
                 //‚¨‚¹‚Á‚©‚¢
-                if (Ganemane.cardCost >= 1)
+                if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
                     sponer.DecreaseObject(1);
-                    Ganemane.SubCost(1);
+                    Ganemane.SubCost(3);
                 }
                 break;
             case 1:
                 //ˆê•ž
-                if (Ganemane.cardCost >= 3)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(3);
-                }
-                break;
-            case 2:
-                //ƒXƒŠ‚Ì‹Zp
-                if (Ganemane.cardCost >= 3)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(3);
-                }
-                break;
-            case 3:
-                //’Á’ÉÜ
                 if (Ganemane.cardCost >= 1)
                 {
                     isUse = true;
@@ -56,52 +40,69 @@ public class CardEffectLists : MonoBehaviour
                     Ganemane.SubCost(1);
                 }
                 break;
-            case 4:
-                //’fß
-                if (Ganemane.cardCost >= 3)
+            case 2:
+                //ƒXƒŠ‚Ì‹Zp
+                if (Ganemane.cardCost >= 2)
                 {
                     isUse = true;
-                    Ganemane.SubCost(3);
+                    Ganemane.SubCost(2);
+                }
+                break;
+            case 3:
+                //’Á’ÉÜ
+                if (Ganemane.cardCost >= 0)
+                {
+                    isUse = true;
+                    
+                    Ganemane.SubCost(0);
+                }
+                break;
+            case 4:
+                //’fß
+                if (Ganemane.cardCost >= 2)
+                {
+                    isUse = true;
+                    Ganemane.SubCost(2);
                 }
                 break;
             case 5:
                 //ˆÞk
-                if (Ganemane.cardCost >= 2)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(2);
-                }
-                break;
-            case 6:
-                //–•ŽE
-                if (Ganemane.cardCost >= 2)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(2);
-                }
-                break;
-            case 7:
-                //ˆê‰ÆS’†
-                if (Ganemane.cardCost >= 5)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(5);
-                }
-                break;
-            case 8:
-                //‚¨Žè“`‚¢
-                if (Ganemane.cardCost >= 2)
-                {
-                    isUse = true;
-                    Ganemane.SubCost(2);
-                }
-                break;
-            case 9:
-                //–½‚Ì‰ÁŒì
                 if (Ganemane.cardCost >= 3)
                 {
                     isUse = true;
                     Ganemane.SubCost(3);
+                }
+                break;
+            case 6:
+                //–•ŽE
+                if (Ganemane.cardCost >= 3)
+                {
+                    isUse = true;
+                    Ganemane.SubCost(3);
+                }
+                break;
+            case 7:
+                //ˆê‰ÆS’†
+                if (Ganemane.cardCost >= 3)
+                {
+                    isUse = true;
+                    Ganemane.SubCost(3);
+                }
+                break;
+            case 8:
+                //‚¨Žè“`‚¢
+                if (Ganemane.cardCost >= 0)
+                {
+                    isUse = true;
+                    Ganemane.SubCost(0);
+                }
+                break;
+            case 9:
+                //–½‚Ì‰ÁŒì
+                if (Ganemane.cardCost >= 4)
+                {
+                    isUse = true;
+                    Ganemane.SubCost(4);
                 }
                 break;
             case 10:
@@ -114,10 +115,10 @@ public class CardEffectLists : MonoBehaviour
                 break;
             case 11:
                 //’fŒÅ‹‘”Û
-                if (Ganemane.cardCost >= 3)
+                if (Ganemane.cardCost >= 4)
                 {
                     isUse = true;
-                    Ganemane.SubCost(3);
+                    Ganemane.SubCost(4);
                 }
                 break;
         }

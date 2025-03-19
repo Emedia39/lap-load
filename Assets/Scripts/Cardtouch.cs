@@ -28,7 +28,7 @@ public class Cardtouch : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && gameMane.cardCost > 0)
+        if (Input.GetMouseButtonDown(0) && gameMane.cardCost > 0 && serverLink.isPlay)
         {
             effectLists.CardEffects(ID);
             if (effectLists.CheckUse())

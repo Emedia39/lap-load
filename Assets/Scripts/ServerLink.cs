@@ -12,8 +12,11 @@ public class ServerLink : MonoBehaviour
 {
     [SerializeField] ObjectSponer sponer;
     [SerializeField] Text playerText;
+    [SerializeField] Text turnText;
     [SerializeField] CardEffectLists effectLists;
     public string playerName;
+    bool isGetTurn = false;
+    public bool isPlay = false;
     private static TcpClient tcpClient;
 
     static string[] SplitText(string input)
@@ -56,11 +59,15 @@ public class ServerLink : MonoBehaviour
             string playerIdString = Encoding.UTF8.GetString(recvBuffer, 0, playerIdlength).Trim();
             playerText.text = playerIdString;
             playerName = playerIdString;
-
             StringBuilder sb = new StringBuilder();
 
             while (tcpClient.Connected)
             {
+                if (!isGetTurn)
+                {
+                    Transmission("getturn");
+                    isGetTurn = true;
+                }
                 int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);
                 if (length > 0)
                 {
@@ -74,7 +81,20 @@ public class ServerLink : MonoBehaviour
                         fullText = fullText.Substring(newLineIndex + 1);
 
                         string[] result = SplitText(receiveString);
-                        if (result[0] == "drop")
+                        if (result[0] == "turn")
+                        {
+                            if (result[1] == playerName)
+                            {
+                                isPlay = true;
+                                turnText.text ="‚ ‚È‚½‚Ì”Ô‚Å‚·";
+                            }
+                            else
+                            {
+                                isPlay = false;
+                                turnText.text = $"{result[1]}‚Ì”Ô‚Å‚·";
+                            }
+                        }
+                        else if (result[0] == "drop")
                         {
                             sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]));
                         }

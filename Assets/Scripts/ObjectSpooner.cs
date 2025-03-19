@@ -17,7 +17,7 @@ public class ObjectSponer : MonoBehaviour
 
     private void Start()
     {
-        restext.text = "";
+        restext.text = "0";
     }
 
     public void DiceRoll()
@@ -34,7 +34,7 @@ public class ObjectSponer : MonoBehaviour
 
     public async void DropCount()
     {
-        if (isRoll)
+        if (isRoll && serverLink.isPlay)
         {
             List<Vector3> placedPositions = new List<Vector3>();
             List<Task> dropTasks = new List<Task>();
@@ -73,8 +73,9 @@ public class ObjectSponer : MonoBehaviour
             await Task.WhenAll(dropTasks);
 
             dropCount = 0;
-            restext.text = "";
+            restext.text = "0";
             isRoll = false;
+            serverLink.Transmission("endturn");
         }
     }
 

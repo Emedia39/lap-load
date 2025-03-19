@@ -11,6 +11,7 @@ public class GameMane : MonoBehaviour
     [SerializeField] Text costText;
     [SerializeField] ObjectSponer sponer;
     [SerializeField] AudioClip diceRoll;
+    [SerializeField] ServerLink serverLink;
     AudioSource audioSource;
     public int cardCost = 0;
 
@@ -22,10 +23,13 @@ public class GameMane : MonoBehaviour
     }
     public void Roll()
     {
-        audioSource.PlayOneShot(diceRoll);
-        cardCost = 5;
-        costText.text = cardCost.ToString();
-        sponer.DiceRoll();
+        if (serverLink.isPlay)
+        {
+            audioSource.PlayOneShot(diceRoll);
+            cardCost = 5;
+            costText.text = cardCost.ToString();
+            sponer.DiceRoll();
+        }
     }
     public void GameOver()
     {

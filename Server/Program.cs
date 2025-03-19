@@ -11,6 +11,7 @@ namespace lap_Load_Server
     {
         static List<TcpClient> tcpClientList = new List<TcpClient>();
         static int clientCount = 0;
+        static int turnCount = 1;
 
         static async Task Main(string[] args)
         {
@@ -34,6 +35,7 @@ namespace lap_Load_Server
                 await client.GetStream().WriteAsync(playerNameBytes, 0, playerNameBytes.Length);
 
                 Console.WriteLine($"{playerName.Trim()} が接続しました");
+                Console.WriteLine($"現在の接続数:{clientCount}");
                 _ = HandleClientAsync(client);
             }
         }
@@ -61,10 +63,29 @@ namespace lap_Load_Server
                         fullText = fullText.Substring(newLineIndex + 1);
 
                         Console.WriteLine($"受信: {message}");
-                        await BroadcastMessageAsync(message);
+                        if (message == "endturn")
+                        {
+                            turnCount++;
+                            if (turnCount > clientCount)
+                            {
+                                turnCount = 1;
+                            }
+                            await BroadcastMessageAsync($"turn/Player{turnCount}");
+                        }
+                        else if (message == "getturn")
+                        {
+                            await BroadcastMessageAsync($"turn/Player{turnCount}");
+
+                        }
+                        else
+                        {
+                            await BroadcastMessageAsync(message);
+                        }
+                            
 
                         if (message == "__end")
                         {
+                            clientCount--;
                             Console.WriteLine("クライアントから切断要求");
                             break;
                         }
@@ -83,6 +104,7 @@ namespace lap_Load_Server
                 tcpClientList.Remove(client);
                 client.Close();
                 clientCount--;
+                Console.WriteLine($"現在の接続数:{clientCount}");
                 Console.WriteLine("クライアント切断");
             }
         }
