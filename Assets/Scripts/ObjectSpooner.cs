@@ -73,11 +73,15 @@ public class ObjectSponer : MonoBehaviour
 
             await Task.WhenAll(dropTasks);
 
+            if (dropCount == 0)
+            {
+                serverLink.Transmission("endturn");
+            }
+
             dropCount = 0;
             restext.text = "0";
             isRoll = false;
             effectLists.objectScale = "1.0";
-            serverLink.Transmission("endturn");
         }
     }
 

@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockObject:
   - {fileID: 8533445089204707742, guid: 95adec4dbd5a2da4faef29f9b3dff3bb, type: 3}
-  - {fileID: 4568334741367478020, guid: 38718dcfaf5eaa04e84351dc21a08bdc, type: 3}
+  - {fileID: 4973195638745016912, guid: 38718dcfaf5eaa04e84351dc21a08bdc, type: 3}
   restext: {fileID: 1314639621}
   cardMane: {fileID: 111369460}
   serverLink: {fileID: 1450963859}
@@ -425,7 +425,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1356,6 +1356,8 @@ MonoBehaviour:
   diceRoll: {fileID: 8300000, guid: 2c48793a0ef1bed47932ea9956805c89, type: 3}
   serverLink: {fileID: 1450963859}
   cardCost: 0
+  blessings: 0
+  isUseCard: 1
 --- !u!4 &949099630
 Transform:
   m_ObjectHideFlags: 0
@@ -1381,11 +1383,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a127d598b4db1584e917e9c662b18064, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.05
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2155,9 +2157,12 @@ MonoBehaviour:
   playerText: {fileID: 285087159}
   turnText: {fileID: 1964602100}
   effectLists: {fileID: 252557224}
+  gameMane: {fileID: 949099629}
   playerName: 
   isPlay: 0
+  isdead: 0
   playerID: 0
+  playerCount: 0
 --- !u!4 &1450963860
 Transform:
   m_ObjectHideFlags: 0
@@ -2383,6 +2388,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1467277174}
   m_CullTransparentMesh: 1
+--- !u!1 &1657805869
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1657805871}
+  - component: {fileID: 1657805870}
+  m_Layer: 0
+  m_Name: MoveObjectMane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1657805870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657805869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 386b9a814382c15448c5c6e3c11c38b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1657805871
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657805869}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1964602097
 GameObject:
   m_ObjectHideFlags: 0

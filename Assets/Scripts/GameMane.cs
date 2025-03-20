@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -13,6 +13,8 @@ public class GameMane : MonoBehaviour
     [SerializeField] ServerLink serverLink;
     AudioSource audioSource;
     public int cardCost = 0;
+    public bool blessings = false;
+    public bool isUseCard = true; 
 
     private void Start()
     {
@@ -32,11 +34,43 @@ public class GameMane : MonoBehaviour
     }
     public void GameOver()
     {
-        serverLink.Transmission("dead");
+        if (serverLink.isPlay && !blessings)
+        {
+            serverLink.Transmission("dead");
+        }
+        else if (serverLink.isPlay && blessings)
+        {
+            serverLink.Transmission("endturn");
+            blessings = false;
+        }
     }
     public void SubCost(int count)
     {
         cardCost -= count;
         costText.text = cardCost.ToString();
+    }
+    public void AddCost(int count)
+    {
+        cardCost += count;
+        costText.text = cardCost.ToString();
+    }
+    public void DoubleRollBonus()
+    {
+        if (serverLink.isPlay)
+        {
+            audioSource.PlayOneShot(diceRoll);
+            int firstRoll = Random.Range(1, 4);
+            int secondRoll = Random.Range(1, 4);
+
+            if (firstRoll == secondRoll)
+            {
+                AddCost(1);
+                Debug.Log($"ゾロ目！コストが1回復しました。現在のコスト: {cardCost}");
+            }
+            else
+            {
+                Debug.Log($"ゾロ目ではありませんでした。結果: {firstRoll} と {secondRoll}");
+            }
+        }
     }
 }

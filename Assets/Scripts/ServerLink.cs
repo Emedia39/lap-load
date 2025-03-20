@@ -16,10 +16,13 @@ public class ServerLink : MonoBehaviour
     [SerializeField] Text playerText;
     [SerializeField] Text turnText;
     [SerializeField] CardEffectLists effectLists;
+    [SerializeField] GameMane gameMane;
     public string playerName;
     bool isGetTurn = false;
     public bool isPlay = false;
+    public bool isdead = false;
     public int playerID;
+    public int playerCount = 0;
     private static TcpClient tcpClient;
 
     static string[] SplitText(string input)
@@ -62,7 +65,7 @@ public class ServerLink : MonoBehaviour
             string playerIdString = Encoding.UTF8.GetString(recvBuffer, 0, playerIdlength).Trim();
             playerName = $"{playerIdString}";
             playerID = StringToInt(playerIdString);
-            playerText.text = "Player"+playerName;
+            playerText.text = "Player" + playerName;
             StringBuilder sb = new StringBuilder();
 
             while (tcpClient.Connected)
@@ -87,10 +90,13 @@ public class ServerLink : MonoBehaviour
                         string[] result = SplitText(receiveString);
                         if (result[0] == "turn")
                         {
+                            var moveManager = GameObject.FindObjectOfType<MoveObjectManager>();
+                            moveManager.ResetEndTurnFlag();
+                            gameMane.isUseCard = true;
                             if (result[1] == playerName)
                             {
                                 isPlay = true;
-                                turnText.text ="あなたの番です";
+                                turnText.text = "あなたの番です";
                             }
                             else
                             {
@@ -100,20 +106,44 @@ public class ServerLink : MonoBehaviour
                         }
                         else if (result[0] == "drop")
                         {
-                            sponer.DropObject(StringToFloat(result[2]), StringToFloat(result[3]), StringToInt(result[4]),new Vector3(StringToFloat(result[5]), StringToFloat(result[5]), StringToFloat(result[5])));
+                            sponer.DropObject(
+                                StringToFloat(result[2]),
+                                StringToFloat(result[3]),
+                                StringToInt(result[4]),
+                                new Vector3(
+                                    StringToFloat(result[5]),
+                                    StringToFloat(result[5]),
+                                    StringToFloat(result[5])
+                                )
+                            );
                         }
-                        else if (result[0] == "use" && result[2] == playerName && result[2] == "all")
+                        else if (result[0] == "use" && (result[2] == playerName || result[2] == "all"))
                         {
                             Debug.Log($"CardID:{result[3]}");
-                            effectLists.CardEffects(StringToInt(result[3]));
+                            effectLists.CardEffects(StringToInt(result[3]),false);
                         }
-                        if (result[0] == "dead" && result[1] == playerName)
+                        else if (result[0] == "dead" && result[1] == playerName)
                         {
+                            turnText.text = "あなたは敗北しました";
+                            isdead = true;
                             gameOverText.SetActive(true);
+                        }
+                        else if (result[0] == "win")
+                        {
+                            turnText.text = "あなたが勝者です！";
+                            Debug.Log("勝利メッセージを受信しました");
+                        }
+                        else if (result[0] == "playercount")
+                        {
+                            playerCount = StringToInt(result[1]);
                         }
                         else
                         {
                             Debug.Log($"受信データ: {receiveString}");
+                        }
+                        if (isdead)
+                        {
+                            turnText.text = "あなたは敗北しました";
                         }
                     }
 
