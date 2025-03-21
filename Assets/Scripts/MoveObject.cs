@@ -49,7 +49,6 @@ public class MoveObject : MonoBehaviour
                         manager.NotifyStopped(this);
                         Debug.Log($"{gameObject.name} ‚ªÃ~‚ğ0.5•bŠm”F‚µ‚Ä•ñ‚µ‚Ü‚µ‚½");
                         isStop = true;
-                        //rb.isKinematic = true;
                     }
                 }
                 else

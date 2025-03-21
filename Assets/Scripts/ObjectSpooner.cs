@@ -12,9 +12,11 @@ public class ObjectSponer : MonoBehaviour
     [SerializeField] CardMane cardMane;
     [SerializeField] ServerLink serverLink;
     [SerializeField] CardEffectLists effectLists;
+    GameMane gameMane;
     int rnd = 0;
     public int dropCount = 0;
     bool isRoll = false;
+    public bool darwCard = false;
 
     private void Start()
     {
@@ -73,14 +75,16 @@ public class ObjectSponer : MonoBehaviour
 
             await Task.WhenAll(dropTasks);
 
-            if (dropCount == 0)
+            if (dropCount == 0 && serverLink.isPlay)
             {
-                serverLink.Transmission("endturn");
+                serverLink.Transmission($"endturn/{serverLink.playerName}");
+                gameMane.AllReset();
             }
 
             dropCount = 0;
             restext.text = "0";
             isRoll = false;
+            //serverLink.isPlay = false;
             effectLists.objectScale = "1.0";
         }
     }

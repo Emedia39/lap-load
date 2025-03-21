@@ -6,6 +6,8 @@ public class MoveObjectManager : MonoBehaviour
 {
     private List<MoveObject> activeObjects = new List<MoveObject>();
     private ServerLink serverLink;
+    [SerializeField] ObjectSponer objectSponer;
+    [SerializeField] GameMane gameMane;
     private bool hasSentEndTurn = false;
 
     void Start()
@@ -32,11 +34,13 @@ public class MoveObjectManager : MonoBehaviour
             activeObjects.Remove(obj);
         }
 
-        if (activeObjects.Count == 0 && serverLink.isPlay && !hasSentEndTurn)
+        if (activeObjects.Count == 0 && serverLink.isPlay && !hasSentEndTurn && objectSponer.darwCard)
         {
             Debug.Log("全てのオブジェクトが停止しました -> endturn送信");
-            serverLink.Transmission("endturn");
+            serverLink.Transmission($"endturn/{serverLink.playerName}");
             hasSentEndTurn = true;
+            objectSponer.darwCard = false;
+            gameMane.AllReset();
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardEffectLists : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CardEffectLists : MonoBehaviour
     [SerializeField] GameMane Ganemane;
     [SerializeField] AudioClip cardUse;
     [SerializeField] ServerLink serverLink;
+    [SerializeField] Text efffectText;
     AudioSource audioSource;
     public bool isUse = false;
     public string objectScale = "1.0";
@@ -165,6 +167,7 @@ public class CardEffectLists : MonoBehaviour
                     if (!chack)
                     {
                         Ganemane.blessings = true;
+                        Ganemane.rifeGard.SetActive(true);
                         Ganemane.SubCost(4);
                     }
                     subject = $"{serverLink.playerName}";
@@ -202,6 +205,64 @@ public class CardEffectLists : MonoBehaviour
         if (isUse)
         {
             audioSource.PlayOneShot(cardUse);
+        }
+    }
+    public void ShowEffects(int ID)
+    {
+        switch (ID)
+        {
+            case 0:
+                //おせっかい
+                efffectText.text = "サイコロを投げて出た目の数分次のプレイヤーのブロックを増やす";
+                break;
+            case 1:
+                //一服
+                efffectText.text = "カードを追加で2枚引く";
+                break;
+            case 2:
+                //スリの技術
+                efffectText.text = "次のプレイヤーのカードを一枚ランダムに削除";
+                break;
+            case 3:
+                //鎮痛剤
+                efffectText.text = "サイコロを2回投げゾロ目が出れば使えるコストを1回復";
+                break;
+            case 4:
+                //断罪
+                efffectText.text = "次のプレイヤーのカードをすべて捨てる。次のプレイヤーは捨てた分の枚数カードを引く";
+                break;
+            case 5:
+                //萎縮
+                efffectText.text = "自分のこのターン落とすすべてのブロックの大きさを小さくする";
+                break;
+            case 6:
+                //抹殺
+                efffectText.text = "自分の1つのブロックを消す";
+                break;
+            case 7:
+                //一家心中
+                efffectText.text = "全員のカードを削除";
+                break;
+            case 8:
+                //お手伝い
+                efffectText.text = "設置するすべてのブロックの大きさが1.5倍になる代わりに利用最大コスト数が2増える";
+                break;
+            case 9:
+                //命の加護
+                efffectText.text = "一度だけ敗北を回避できる";
+
+                break;
+            case 10:
+                //応急処置
+                efffectText.text = "サイコロを1つ増やす代わりに使えるコストを3増やす";
+                break;
+            case 11:
+                //断固拒否
+                efffectText.text = "次のプレイヤーのターンをスキップする";
+                break;
+            case 12:
+                efffectText.text = "";
+                break;
         }
     }
 }

@@ -28,6 +28,7 @@ public class Cardtouch : MonoBehaviour
 
     private void OnMouseOver()
     {
+        effectLists.ShowEffects(ID);
         if (Input.GetMouseButtonDown(0) && gameMane.cardCost > 0 && serverLink.isPlay && gameMane.isUseCard)
         {
             effectLists.CardEffects(ID,true);
@@ -36,11 +37,12 @@ public class Cardtouch : MonoBehaviour
                 serverLink.Transmission($"use/{serverLink.playerName}/{effectLists.subject}/{ID}");
                 cardTouch.UseCard(gameObject);
                 effectLists.isUse = false;
+                effectLists.ShowEffects(12);
             }
         }
     }
     private void OnMouseExit()
     {
-            
+        effectLists.ShowEffects(12);
     }
 }

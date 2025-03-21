@@ -21,6 +21,10 @@ namespace lap_Load_Server
         static int clientCount = 0;
         static int turnCount = 1;
 
+        static string[] SplitText(string input)
+        {
+            return input.Trim().Split('/');
+        }
         static async Task Main(string[] args)
         {
             await StartListener();
@@ -71,9 +75,10 @@ namespace lap_Load_Server
                         string message = fullText.Substring(0, newLineIndex).Trim();
                         fullText = fullText.Substring(newLineIndex + 1);
 
+                        string[] result = SplitText(message);
                         Console.WriteLine($"受信: {message}");
 
-                        if (message == "endturn")
+                        if (result[0] == "endturn" && result[1] == turnCount.ToString())
                         {
                             NextTurn();
                             await BroadcastMessageAsync($"turn/{turnCount}");
@@ -108,16 +113,8 @@ namespace lap_Load_Server
 
                         if (message == "__end")
                         {
-                            players.Remove(player);
-                            player.Client.Close();
-                            clientCount--;
-                            if (clientCount == 0)
-                            {
-                                turnCount = 1;
-                            }
-                            Console.WriteLine($"現在の接続数:{clientCount}");
-                            Console.WriteLine("クライアント切断");
-                        break;
+                            Console.WriteLine($"Player{player.Id} が切断申請しました");
+                            return;
                         }
                         Console.WriteLine($"送信:{backmessage}");
                         Console.WriteLine("-------------------------------------");
@@ -135,7 +132,7 @@ namespace lap_Load_Server
                 players.Remove(player);
                 player.Client.Close();
                 clientCount--;
-                if (clientCount == 0)
+                if (clientCount <= 0)
                 {
                     turnCount = 1;
                 }

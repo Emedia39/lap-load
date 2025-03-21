@@ -11,10 +11,12 @@ public class GameMane : MonoBehaviour
     [SerializeField] ObjectSponer sponer;
     [SerializeField] AudioClip diceRoll;
     [SerializeField] ServerLink serverLink;
+    [SerializeField] public GameObject rifeGard;
     AudioSource audioSource;
     public int cardCost = 0;
     public bool blessings = false;
     public bool isUseCard = true; 
+    public bool isRoll = false;
 
     private void Start()
     {
@@ -24,12 +26,14 @@ public class GameMane : MonoBehaviour
     }
     public void Roll()
     {
-        if (serverLink.isPlay)
+        if (serverLink.isPlay && !isRoll)
         {
             audioSource.PlayOneShot(diceRoll);
             cardCost = 5;
             costText.text = cardCost.ToString();
             sponer.DiceRoll();
+            sponer.darwCard = true;
+            isRoll = true;
         }
     }
     public void GameOver()
@@ -40,8 +44,9 @@ public class GameMane : MonoBehaviour
         }
         else if (serverLink.isPlay && blessings)
         {
-            serverLink.Transmission("endturn");
+            serverLink.Transmission($"endturn/{serverLink.playerName}");
             blessings = false;
+            rifeGard.SetActive(false);
         }
     }
     public void SubCost(int count)
@@ -77,5 +82,9 @@ public class GameMane : MonoBehaviour
     {
         serverLink.Transmission("__end");
         Initiate.Fade("TitleScene", Color.black, 1.0f);
+    }
+    public void AllReset()
+    {
+        isRoll = false;
     }
 }
