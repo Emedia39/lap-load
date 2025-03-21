@@ -108,9 +108,16 @@ namespace lap_Load_Server
 
                         if (message == "__end")
                         {
+                            players.Remove(player);
+                            player.Client.Close();
                             clientCount--;
-                            Console.WriteLine("クライアントから切断要求");
-                            break;
+                            if (clientCount == 0)
+                            {
+                                turnCount = 1;
+                            }
+                            Console.WriteLine($"現在の接続数:{clientCount}");
+                            Console.WriteLine("クライアント切断");
+                        break;
                         }
                         Console.WriteLine($"送信:{backmessage}");
                         Console.WriteLine("-------------------------------------");
