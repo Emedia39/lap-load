@@ -96,12 +96,18 @@ public class ServerLink : MonoBehaviour
                             if (result[1] == playerName)
                             {
                                 isPlay = true;
-                                turnText.text = "あなたの番です";
+                                if (!isdead)
+                                {
+                                    turnText.text = "あなたの番です";
+                                }
                             }
                             else
                             {
                                 isPlay = false;
-                                turnText.text = $"Player{result[1]}の番です";
+                                if (!isdead)
+                                {
+                                    turnText.text = $"Player{result[1]}の番です";
+                                }
                             }
                         }
                         else if (result[0] == "drop")
@@ -131,6 +137,7 @@ public class ServerLink : MonoBehaviour
                         else if (result[0] == "win")
                         {
                             turnText.text = "あなたが勝者です！";
+                            gameOverText.SetActive(true);
                             Debug.Log("勝利メッセージを受信しました");
                         }
                         else if (result[0] == "playercount")
@@ -186,6 +193,6 @@ public class ServerLink : MonoBehaviour
 
     private async void Start()
     {
-        await StartClient("127.0.0.1", 20001);
+        await StartClient("20.222.249.157", 20001);
     }
 }

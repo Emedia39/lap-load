@@ -39,4 +39,8 @@ public class Cardtouch : MonoBehaviour
             }
         }
     }
+    private void OnMouseExit()
+    {
+            
+    }
 }

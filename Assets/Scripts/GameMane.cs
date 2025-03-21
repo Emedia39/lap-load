@@ -73,4 +73,9 @@ public class GameMane : MonoBehaviour
             }
         }
     }
+    public void TitleBack()
+    {
+        serverLink.Transmission("__end");
+        Initiate.Fade("TitleScene", Color.black, 1.0f);
+    }
 }
